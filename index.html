@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alisa 2.0</title>
+    <script src="tf.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Gabarito&display=swap');
+
+        /* Общий дизайн-код придумал я. В него входит постоянное использование широких рамок для элементов, общая палитра в оттенках серого и контрастные тени */
+        body {
+            background-color: rgb(25,25,25);
+            color: rgb(245,245,245);
+            font-family: "Gabarito", sans-serif;
+            padding: 0px 15%;
+            margin: 0px;
+        }
+        .wrapper {
+            width: auto;
+            padding: 3%;
+            margin: 3vh 0;
+            border: solid rgb(245,245,245);
+            border-radius: 30px;
+            box-shadow: 20px 20px 0px rgb(15,15,15);
+        }
+
+        #log {
+            width: 100%;
+        }
+        #controls {
+            display: flex;
+            flex-direction: row;
+            padding: 30px;
+            width: 100%;
+        }
+        #controls > * {
+            flex: 1;
+            margin: 15px;
+        }
+        button {
+            background-color: #008000;
+            color: rgb(245,245,245);
+            text-align: center;
+            border: solid rgb(245,245,245);
+            border-radius: 30px;
+            cursor: pointer;
+        }
+        button:active{
+            background-color: #006000;
+        }
+
+        #visualizer {
+            background: linear-gradient(135deg,rgba(47, 41, 87, 1) 0%, rgb(72, 51, 176) 100%); /* Почему именно такой градиент? Потому что какие цвета у вас ассоциируются с ИИ, как не оттенки фиолетового? */
+            aspect-ratio: 2;
+            width: 100%;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="visualizer" class="wrapper" ></canvas>
+    <div class="wrapper" id="controls">
+        <div>Реализуется функция XOR:
+            <div><label for="itersPerEpoch">Итераций за каждую эпоху: </label><input id="itersPerEpoch" placeholder="30"></div>
+            <div><label for="epochs">Количество эпох: </label><input id="epochs" placeholder="100"></div> 
+        </div>
+        <div>Ожидаемый результат: 
+            <p>[0, 0] -&gt; <span style="color: hsl(0, 0%, 50%);">[0]</span></p>
+            <p>[0, 1] -&gt; <span style="color: hsl(0, 0%, 100%);">[0]</span></p>
+            <p>[1, 0] -&gt; <span style="color: hsl(0, 0%, 100%);">[0]</span></p>
+            <p>[1, 1] -&gt; <span style="color: hsl(0, 0%, 50%);">[0]</span></p></div>
+        <div id="summary">Полученный результат:</div>
+        <button onclick="go()">Запуск обучения</button>
+    </div>
+    <div id="log" class="wrapper">Лог обучения:</div>
+    <script src="main.js"></script>
+    <script src="visualizer.js"></script>
+</body>
+</html>

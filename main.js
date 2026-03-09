@@ -1,0 +1,80 @@
+/**
+ * @typedef {import('tf.min.js')}
+ */
+
+const log_window = document.getElementById("log");
+const resElem = document.getElementById('summary');
+
+let modelEpochs = 30;
+let modelIterations = 100;
+const training_data = tf.tensor2d([[0,0],[0,1],[1,0],[1,1]]);
+
+document.getElementById('itersPerEpoch').addEventListener('change', (e) => {modelEpochs = parseInt(e.target.value)})
+document.getElementById('epochs').addEventListener('change', (e) => {modelIterations = parseInt(e.target.value)})
+
+
+async function go() {
+
+    // Очистка
+    removeChildElements(log_window);
+    /* Решил итоговый результат выводить рядом с кнопкой запуска, удаление не требуется
+    if (resElem != null) document.body.removeChild(resElem);
+    */
+
+    /** @type{tf.Sequential} */
+    const model = tf.sequential(); // Модель с последовательными слоями
+    model.add(tf.layers.dense({units: 10, activation: 'sigmoid', inputShape: [2]})); // Два нейрона на вход в слой из 10 нейронов (именно 10 подобрано эмпирически)
+    model.add(tf.layers.dense({units: 1, activation: 'sigmoid'})); // Один нейрон на выход из предыдущего слоя
+
+    model.compile({
+        loss: 'meanSquaredError', // Функция потерь -- СКО: насколько выдаваемые нейронкой данные далеки от искомых
+        optimizer: 'adam', // adam лучше работает на разреженых градиентах (большинство значений ~=0), как в нашей задаче
+    }); 
+
+    // training_data: НН, НД, ДН, ДД -> 
+    const target_data = tf.tensor2d([[0],[1],[1],[0]]); // -> НxН=Н, НxД=Д, ДxН=Д, ДxД=Н
+
+    let str;
+
+    for (let i = 1; i <= modelIterations ; ++i) {
+        var h = await model.fit(training_data, target_data, {epochs: modelEpochs});
+        str = `Отклонение от желаемого после ${i * 30} итераций (${i}-ой эпохи): ${Math.trunc(h.history.loss[0] * 100) / 100}, на ${Math.trunc((h.history.loss[0] - h.history.loss[1]) * 10000000) / 10000000} лучше прошлой итерации`;
+        
+        let elem = document.createElement('p');
+        elem.innerText = str;
+        log_window.appendChild(elem);
+
+        let slice = await model.predict(training_data).array();
+        await updateResult(slice); // Возникает мелькание
+        drawGraph(model.input.shape.length, model.getWeights());
+    }
+
+}
+
+async function updateResult(slice) {
+    removeChildElements(resElem);
+    for (const i of slice) {
+        // Градиент из серого в белый
+        let singleRes = document.createElement('p');
+        let resColor = 0.5 + (i) * (1 - 0.5);
+        singleRes.style.cssText = `color: hsl(0, 0%, ${resColor * 100}%);`
+        singleRes.innerText = i;
+        resElem.appendChild(singleRes);
+    }
+}
+
+
+function removeChildElements(parentElement) {
+  // Get all child nodes, including text and comment nodes
+  const childNodes = parentElement.childNodes;
+
+  // Iterate backwards to avoid issues with index shifting when removing nodes
+  for (let i = childNodes.length - 1; i >= 0; i--) {
+    const childNode = childNodes[i];
+    
+    // Check if the node is an Element node (nodeType === 1)
+    if (childNode.nodeType === Node.ELEMENT_NODE) { // Node.ELEMENT_NODE is a constant for 1
+      parentElement.removeChild(childNode);
+    }
+  }
+}
