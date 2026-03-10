@@ -23,7 +23,7 @@ async function go() {
 
     /** @type{tf.Sequential} */
     const model = tf.sequential(); // Модель с последовательными слоями
-    model.add(tf.layers.dense({units: 10, activation: 'sigmoid', inputShape: [2]})); // Два нейрона на вход в слой из 10 нейронов (именно 10 подобрано эмпирически)
+    model.add(tf.layers.dense({units: 10, activation: 'sigmoid', inputShape: [2]})); // Два нейрона на вход в слой из 10 нейронов, именно 10 условно говоря взято на рандом
     model.add(tf.layers.dense({units: 1, activation: 'sigmoid'})); // Один нейрон на выход из предыдущего слоя
 
     model.compile({
@@ -38,7 +38,7 @@ async function go() {
 
     for (let i = 1; i <= modelIterations ; ++i) {
         var h = await model.fit(training_data, target_data, {epochs: modelEpochs});
-        str = `Отклонение от желаемого после ${i * 30} итераций (${i}-ой эпохи): ${Math.trunc(h.history.loss[0] * 100) / 100}, на ${Math.trunc((h.history.loss[0] - h.history.loss[1]) * 10000000) / 10000000} лучше прошлой итерации`;
+        str = `Отклонение от желаемого после ${i * modelEpochs} итераций (${i}-й эпохи): ${Math.trunc(h.history.loss[0] * 100) / 100}, на ${Math.trunc((h.history.loss[0] - h.history.loss[1]) * 10000000) / 10000000} лучше прошлой итерации`;
         
         let elem = document.createElement('p');
         elem.innerText = str;
