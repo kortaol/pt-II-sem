@@ -61,7 +61,7 @@ function drawGraph(inputShape, weights) {
             ctx.beginPath();
             let neuronX = marginH * (i + 2);
             let neuronY = canv.height / 2 - marginV * layers[i].size / 2 + marginV * j;
-            ctx.fillStyle = `hsl(0, 0%, ${layerWeights[j]*100}%)`;
+            ctx.fillStyle = `hsl(0, 0%, ${50 + layerWeights[j]*50}%)`;
             console.log(layerWeights[j]);
             ctx.arc(neuronX, neuronY, radius, 0, 2 * Math.PI);
             ctx.fill();
