@@ -2,6 +2,8 @@ const canv = /** @type {HTMLCanvasElement} */ (document.getElementById("visualiz
 const ctx = canv.getContext('2d');
 canv.width = canv.clientWidth; canv.height = canv.clientHeight;
 
+const dimensionsElem = document.getElementById("dimensions");
+
 function drawGraph(inputShape, weights) {
 
     const layers = weights.filter((value, index) => index % 2 === 1);
@@ -83,3 +85,25 @@ function drawGraph(inputShape, weights) {
     ctx.stroke();
     ctx.closePath();
 }
+
+canv.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    if (isRunning) return;
+    modelHiddenLayers = Math.max(modelHiddenLayers - 1, 1);
+    dimensionsElem.innerText = `10 x ${modelHiddenLayers}`;
+});
+
+canv.addEventListener('click', (e) => {
+    if (isRunning) return;
+    switch (e.button) {
+        case 0: //lmb
+            modelHiddenLayers += 1
+            break;
+
+        
+
+        default:
+            break;
+    }
+    dimensionsElem.innerText = `10 x ${modelHiddenLayers}`;
+});

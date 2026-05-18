@@ -8,6 +8,9 @@ const startButton = document.getElementById("startbutton");
 
 let modelEpochs = 30;
 let modelIterations = 100;
+let modelHiddenLayers = 1;
+let isRunning = false;
+
 const training_data = tf.tensor2d([[0,0],[0,1],[1,0],[1,1]]);
 
 document.getElementById('itersPerEpoch').addEventListener('change', (e) => {modelEpochs = parseInt(e.target.value)})
@@ -22,10 +25,12 @@ async function go() {
     if (resElem != null) document.body.removeChild(resElem);
     */
     startButton.disabled = true;
+    isRunning = true;
 
     /** @type{tf.Sequential} */
     const model = tf.sequential(); // Модель с последовательными слоями
     model.add(tf.layers.dense({units: 10, activation: 'sigmoid', inputShape: [2]})); // Два нейрона на вход в слой из 10 нейронов, именно 10 условно говоря взято на рандом
+    for (let i = 0; i < modelHiddenLayers - 1; i++) model.add(tf.layers.dense({units: 10, activation: 'sigmoid'}));
     model.add(tf.layers.dense({units: 1, activation: 'sigmoid'})); // Один нейрон на выход из предыдущего слоя
 
     model.compile({
@@ -52,6 +57,7 @@ async function go() {
     }
 
     startButton.disabled = false;
+    isRunning = false;
 }
 
 async function updateResult(slice) {
