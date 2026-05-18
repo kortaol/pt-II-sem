@@ -11,6 +11,7 @@ function openPopup() {
     popup.classList.add('active');
     body.classList.add('no-scroll');
     // toggleBtn.textContent = 'Закрыть окно';
+    localStorage.setItem('popup', true);
 }
 
 // Функция закрытия окна
@@ -19,6 +20,7 @@ function closePopup() {
     popup.classList.remove('active');
     body.classList.remove('no-scroll');
     // toggleBtn.textContent = 'Открыть окно';
+    localStorage.setItem('popup', false);
 }
 
 // Функция переключения
@@ -44,4 +46,7 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-openPopup(); // По дефолту открыто
+
+if (localStorage.getItem('popup') === "true" || localStorage.getItem('popup') === null){
+    openPopup(); // Открыто при открытии / в первый раз
+}
