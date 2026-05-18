@@ -3,7 +3,8 @@
  */
 
 const log_window = document.getElementById("log");
-const resElem = document.getElementById('summary');
+const resElem = document.getElementById("summary");
+const startButton = document.getElementById("startbutton");
 
 let modelEpochs = 30;
 let modelIterations = 100;
@@ -20,6 +21,7 @@ async function go() {
     /* Решил итоговый результат выводить рядом с кнопкой запуска, удаление не требуется
     if (resElem != null) document.body.removeChild(resElem);
     */
+    startButton.disabled = true;
 
     /** @type{tf.Sequential} */
     const model = tf.sequential(); // Модель с последовательными слоями
@@ -49,6 +51,7 @@ async function go() {
         drawGraph(model.input.shape.length, model.getWeights());
     }
 
+    startButton.disabled = false;
 }
 
 async function updateResult(slice) {
