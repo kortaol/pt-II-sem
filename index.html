@@ -5,65 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alisa 2.0</title>
     <script src="tf.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Gabarito&display=swap');
+    <link rel="stylesheet" href="style.css">
 
-        /* Общий дизайн-код придумал я. В него входит постоянное использование широких рамок для элементов, общая палитра в оттенках серого и контрастные тени */
-        body {
-            background-color: rgb(25,25,25);
-            color: rgb(245,245,245);
-            font-family: "Gabarito", sans-serif;
-            padding: 0px 15%;
-            margin: 0px;
-        }
-        .wrapper {
-            width: auto;
-            padding: 3%;
-            margin: 3vh 0;
-            border: solid rgb(245,245,245);
-            border-radius: 30px;
-            box-shadow: 20px 20px 0px rgb(15,15,15);
-        }
 
-        #log {
-            width: 100%;
-        }
-        #controls {
-            display: flex;
-            flex-direction: row;
-            padding: 30px;
-            width: 100%;
-        }
-        #controls > * {
-            flex: 1;
-            margin: 15px;
-        }
-        button {
-            background-color: #008000;
-            color: rgb(245,245,245);
-            text-align: center;
-            border: solid rgb(245,245,245);
-            border-radius: 30px;
-            cursor: pointer;
-        }
-        button:active{
-            background-color: #006000;
-        }
-        button:disabled{
-            background-color: hsl(120, 16%, 53%);
-        }
+    <!-- https://katex.org/docs/browser -->
+    <link rel="stylesheet" href="katex.min.css" integrity="sha384-nH0MfJ44wi1dd7w6jinlyBgljjS8EJAh2JBoRad8a3VDw2K69vfaaqm4WnR+gXtA" crossorigin="anonymous">
 
-        #visualizer {
-            background: linear-gradient(135deg,rgba(47, 41, 87, 1) 0%, rgb(72, 51, 176) 100%); /* Почему именно такой градиент? Потому что какие цвета у вас ассоциируются с ИИ, как не оттенки фиолетового? */
-            aspect-ratio: 2;
-            width: 100%;
-            padding: 0;
-        }
-    </style>
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script src="katex.min.js" integrity="sha384-CwjPRVHTvLiMBFjEoij+QZViMV5rhTOIp7CJzl24JEqpRDA1sJFHVXXLURktbYYp" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script src="auto-render.min.js" integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
 </head>
 <body>
 
     <canvas id="visualizer" class="wrapper" ></canvas>
+    <button class="toggle-btn" id="togglePopup">i</button>
     <div class="wrapper" id="controls">
         <div>Реализуется функция XOR:
             <div><label for="itersPerEpoch">Итераций за каждую эпоху: </label><input id="itersPerEpoch" placeholder="30"></div>
@@ -80,5 +38,101 @@
     <div id="log" class="wrapper">Лог обучения:</div>
     <script src="main.js"></script>
     <script src="visualizer.js"></script>
+
+    <!-- Оверлей (затемнение фона) -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Всплывающее окно -->
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <div class="popup-inner wrapper">
+                
+                <script>
+                    function renderHere(text, tag='div') {
+                        const scriptTag = document.currentScript;
+                        const mathElement = document.createElement(tag);
+                        mathElement.style = "user-select:none";
+                        scriptTag.parentNode.insertBefore(mathElement, scriptTag);
+                        katex.render(text, mathElement, {
+                            throwOnError: false,
+                            displayMode: false // set to true if you want a block equation
+                        });
+                    }
+                </script>
+
+                <h1>Визуализатор нейронной сети</h1>
+
+                <p>Современный мир трудно представить без широкого использования нейронных сетей в повседневной жизни. Они смогли пробраться во все сферы деятельности современного человека, но далеко не все и близко представляют, как именно устроена нейросеть внутри. Целью нашего проекта является наглядная демонстрация внутренних процессов нейронной сети на примере простой функции xor.</p>
+                
+                <p>Каждая нейронная сеть работает, как фунция, имеющая несколько входных значений (входной слой нейронов) и, соответственно, выходных значений (выходной слой нейронов). Внутри самой сети каждое значение проходит через связи, которые изменяют значения на основе своих весов &mdash; если это числовое значение, то оно домножается на вес связи; в конечном итоге нейрон, в которую идёт связь, суммирует все значения, поступившие со связей, и в зависимости от своей функции активации, имеющей определённый порог, передаёт его дальше.</p>
+
+                <p>Немного о параметрах нашей сети:</p>
+
+                <script>renderHere("W^{(1)} \\text{ -- матрица весов первого слоя } (10 \\times 2)")</script>
+                <script>renderHere("b^{(1)} \\text{ -- вектор смещений первого слоя } (10 \\times 1)")</script>
+                <script>renderHere("W^{(2)} \\text{ -- матрица весов первого слоя } (1 \\times 10)")</script>
+                <script>renderHere("b^{(2)} \\text{ -- вектор смещений первого слоя } (1 \\times 1)")</script>
+
+                <p>Прямое распространение сигнала осуществляется по формулам: </p>
+
+                <script>renderHere("z^{(1)} = W^{(1)}x + b^{(1)}")</script>
+
+                <script>renderHere("a^{(1)} = \\sigma \\left( z^{(1)} \\right)")</script>
+
+                <script>renderHere("z^{(2)} = W^{(2)}a^{(1)} + b^{(2)}")</script>
+
+                <script>renderHere("\\hat{y} = \\sigma \\left( z^{(2)} \\right)")</script>
+
+                <p>Где <script>renderHere("\\sigma", tag='span')</script> &mdash; сигмоидальная функция активации:</p>
+
+                <script>renderHere("\\sigma(z) = \\frac{1}{1+e^{-z}} \\text{, её производная: } \\sigma'(z) = \\sigma(z)(1 - \\sigma(z))")</script>
+                <p>Эта функция применяется поэлементно к каждому компоненту вектора.</p>
+
+                <p>При обучении нейронной сети мы стараемся свести к нулю функцию потерь, которая отражает, насколько полученный результат далёк от искомого; в данном случае мы использовали привычную функцию СКО:</p>
+
+                <script>renderHere("f(x) = \\frac{\\sum (y - \\hat{y}^2)}{n}")</script>
+
+                <p>Ошибка выходного слоя определяется как <script>renderHere("\\delta^{(2)} = (\\hat{y} - y) \\sigma'(z^{(2)})", tag="span");</script>, в то время как ошибка скрытого слоя: <script>renderHere("\\delta^{(1)} = \\left( \\left(W^{(2)}\\right)^T \\delta^{(2)} \\circ \\sigma'(z^{(1)}) \\right)", tag="span");</script></p> 
+
+                <p>Но как же мы меняем значения? Для этого используется градиентный спуск &mdash; именно благодаря нему минимизируется функция потерь. Алгоритм начинает со случайного набора параметров (весов), на основе которых вычисляется математический вектор (градиент), который указывает направление самого быстрого возрастания функции; чтобы минимизировать функцию, алгоритм делает шаг в противоположную сторону. Затем эти шаги повторяются итеративно, пока функция потерь не перестанет заметно уменьшаться (достигнут минимум).</p>
+
+                <p>В данном примере используется оптимизатор Adam. По сути он ускоряет спуск при малых значениях градиента и замедляет при больших, а также делает плавнее изменение направления спуска используя значения предыдущих итераций.</p>
+
+                <p>Обновление параметров при градиентном спуске осуществляется по формулам:</p>
+
+                <script>renderHere("W := W - \\eta ~ \\frac{\\partial L}{\\partial W}")</script>
+                <script>renderHere("b := b - \\eta ~ \\frac{\\partial L}{\\partial b}")</script>
+
+                <p>Основные формулы Adam:</p>
+
+                <script>renderHere("m_t = \\beta_1 m_{t-1} + (1 - \\beta_1) g_t ~ \\text{(Отвечает за направление)}")</script>
+                <script>renderHere("v_t = \\beta_2 v_{t-1} + (1 - \\beta_2) g_t^2 ~ \\text{(Отвечает за шаг)}")</script>
+
+                <p>(<script>renderHere("g_t", tag="span")</script> &mdash; градиент от СКО.)</p>
+
+                <p>Коррекция смещения:</p>
+
+                <script>renderHere("\\hat{m}_t = \\frac{m_t}{1 - \\beta_1^t}")</script>
+                <script>renderHere("\\hat{v}_t = \\frac{v_t}{1 - \\beta_2^t}")</script>
+
+                <p>Обновление параметров:</p>
+
+                <script>renderHere("\\theta_t = \\theta_{t-1} - \\frac{\\eta \\hat{m}_t}{\\sqrt{\\hat{v}_t} + \\varepsilon} \\text{, где } \\theta_t \\text{ -- значения весов и веткоров смещения.}")</script>
+
+                <p>Типичные значения параметров при использовании TensorFlow:</p>
+
+                <script>renderHere("\\eta = 0.001")</script>
+                <script>renderHere("\\beta_1 = 0.9")</script>
+                <script>renderHere("\\beta_2 = 0.999")</script>
+                <script>renderHere("\\varepsilon = 10^{-8}")</script>
+
+                <p>Все эти несложные манипуляции позволяют нейросети по выходным данным предсказывать выход, делая это всё лучше и лучше с каждой новой итерацией!</p>
+
+                <div style="display: flex; justify-content: center;"> <button class="close-btn" id="closePopup">К симуляции</button> </div>
+            </div>
+        </div>
+    </div>
+    <!-- <script defer src="formulae.js"></script> -->
+    <script src="popup.js"></script>
 </body>
 </html>
