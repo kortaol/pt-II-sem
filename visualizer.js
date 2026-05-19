@@ -25,9 +25,10 @@ function drawGraph(inputShape, weights) {
         let neuronX = marginH;
         let neuronY = canv.height / 2 - marginV * inputShape / 2 + marginV * i;
         let layerWeights = connections[i].dataSync();
+        let maxLayerWeight = Math.max(...layerWeights.map(Math.abs));
         for (let j = 0; j < layers[0].size; j++) {
             ctx.beginPath();
-            ctx.strokeStyle = `hsl(0, 0%, ${50 + layerWeights[j]*50}%)`;
+            ctx.strokeStyle = `hsl(0, 0%, ${50 + layerWeights[j]/maxLayerWeight*50}%)`;
             ctx.moveTo(neuronX, neuronY);
             nextY = canv.height / 2 - marginV * layers[0].size / 2 + marginV * j;
             // console.log(layerWeights, (i * layers[0].size + j), layerWeights[i * layers[0].size + j])
@@ -38,12 +39,13 @@ function drawGraph(inputShape, weights) {
     // next layers
     for (let i = 0; i < layers.length - 1; i++) {
         let layerWeights = connections[i + 1].dataSync();
+        let maxLayerWeight = Math.max(...layerWeights.map(Math.abs));
         for (let j = 0; j < layers[i].size; j++) {
             let neuronX = marginH * (i + 2);
             let neuronY = canv.height / 2 - marginV * layers[i].size / 2 + marginV * j;
             for (let k = 0; k < layers[i + 1].size; k++) {
                 ctx.beginPath();
-                ctx.strokeStyle = `hsl(0, 0%, ${50 + layerWeights[j * layers[i + 1].size + k]*50}%)`;
+                ctx.strokeStyle = `hsl(0, 0%, ${50 + layerWeights[j * layers[i + 1].size + k]/maxLayerWeight*50}%)`;
                 ctx.moveTo(neuronX, neuronY);
                 nextY = canv.height / 2 - marginV * layers[i + 1].size / 2 + marginV * k;
                 ctx.lineTo(neuronX + marginH, nextY);
@@ -68,11 +70,12 @@ function drawGraph(inputShape, weights) {
     // next layers
     for (let i = 0; i < layers.length; i++) {
         let layerWeights = layers[i].dataSync();
+        let maxLayerWeight = Math.max(...layerWeights.map(Math.abs));
         for (let j = 0; j < layers[i].size; j++) {
             ctx.beginPath();
             let neuronX = marginH * (i + 2);
             let neuronY = canv.height / 2 - marginV * layers[i].size / 2 + marginV * j;
-            ctx.fillStyle = `hsl(0, 0%, ${50 + layerWeights[j]*50}%)`;
+            ctx.fillStyle = `hsl(0, 0%, ${50 + layerWeights[j]/maxLayerWeight*50}%)`;
             // console.log(layerWeights[j]);
             ctx.arc(neuronX, neuronY, radius, 0, 2 * Math.PI);
             ctx.fill();
