@@ -37,13 +37,13 @@ function drawGraph(inputShape, weights) {
     }
     // next layers
     for (let i = 0; i < layers.length - 1; i++) {
+        let layerWeights = connections[i + 1].dataSync();
         for (let j = 0; j < layers[i].size; j++) {
             let neuronX = marginH * (i + 2);
             let neuronY = canv.height / 2 - marginV * layers[i].size / 2 + marginV * j;
-            let layerWeights = connections[i].dataSync();
             for (let k = 0; k < layers[i + 1].size; k++) {
                 ctx.beginPath();
-                ctx.strokeStyle = `hsl(0, 0%, ${50 + layerWeights[j]*50}%)`;
+                ctx.strokeStyle = `hsl(0, 0%, ${50 + layerWeights[j * layers[i + 1].size + k]*50}%)`;
                 ctx.moveTo(neuronX, neuronY);
                 nextY = canv.height / 2 - marginV * layers[i + 1].size / 2 + marginV * k;
                 ctx.lineTo(neuronX + marginH, nextY);
@@ -90,7 +90,7 @@ canv.addEventListener('contextmenu', (e) => {
     e.preventDefault();
     if (isRunning) return;
     modelHiddenLayers = Math.max(modelHiddenLayers - 1, 1);
-    dimensionsElem.innerText = `10 x ${modelHiddenLayers}`;
+    dimensionsElem.innerText = `6 x ${modelHiddenLayers}`;
 });
 
 canv.addEventListener('click', (e) => {
@@ -105,5 +105,5 @@ canv.addEventListener('click', (e) => {
         default:
             break;
     }
-    dimensionsElem.innerText = `10 x ${modelHiddenLayers}`;
+    dimensionsElem.innerText = `6 x ${modelHiddenLayers}`;
 });

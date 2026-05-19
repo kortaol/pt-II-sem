@@ -29,8 +29,8 @@ async function go() {
 
     /** @type{tf.Sequential} */
     const model = tf.sequential(); // Модель с последовательными слоями
-    model.add(tf.layers.dense({units: 10, activation: 'sigmoid', inputShape: [2]})); // Два нейрона на вход в слой из 10 нейронов, именно 10 условно говоря взято на рандом
-    for (let i = 0; i < modelHiddenLayers - 1; i++) model.add(tf.layers.dense({units: 10, activation: 'sigmoid'}));
+    model.add(tf.layers.dense({units: 6, activation: 'sigmoid', inputShape: [2]})); // Два нейрона на вход в слой из 6 нейронов, именно 6 условно говоря взято на рандом
+    for (let i = 0; i < modelHiddenLayers - 1; i++) model.add(tf.layers.dense({units: 6, activation: 'sigmoid'}));
     model.add(tf.layers.dense({units: 1, activation: 'sigmoid'})); // Один нейрон на выход из предыдущего слоя
 
     model.compile({

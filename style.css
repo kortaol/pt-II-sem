@@ -50,6 +50,20 @@ button:disabled{
     background-color: hsl(120, 16%, 53%);
 }
 
+input {
+    background: transparent;
+    border: transparent;
+    border-bottom: rgb(245,245,245) 3px solid;
+    color: rgb(245,245,245);
+    margin: 8px 0;
+}
+input:focus{
+    outline: none;
+}
+input::placeholder {
+    color: #bbbbbb;
+}
+
 #visualizer {
     background: linear-gradient(135deg,rgba(47, 41, 87, 1) 0%, rgb(72, 51, 176) 100%); /* Почему именно такой градиент? Потому что какие цвета у вас ассоциируются с ИИ, как не оттенки фиолетового? */
     aspect-ratio: 2;
@@ -158,5 +172,5 @@ button:disabled{
 }
 
 .katex {
-    font-size: 1.4em !important; /* Adjust this value to your liking */
+    font-size: 1.2em !important; /* Adjust this value to your liking */
 }       
