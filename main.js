@@ -15,6 +15,9 @@ const training_data = tf.tensor2d([[0,0],[0,1],[1,0],[1,1]]);
 
 document.getElementById('itersPerEpoch').addEventListener('change', (e) => {modelEpochs = parseInt(e.target.value)})
 document.getElementById('epochs').addEventListener('change', (e) => {modelIterations = parseInt(e.target.value)})
+document.getElementById('itersPerEpoch').addEventListener('beforeinput', (e) => {const allowedChars = /[0-9]/; if (event.data && !allowedChars.test(event.data)) event.preventDefault();});
+document.getElementById('epochs').addEventListener('beforeinput', (e) => {const allowedChars = /[0-9]/; if (event.data && !allowedChars.test(event.data)) event.preventDefault();})
+
 
 
 async function go() {
